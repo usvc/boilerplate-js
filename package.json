@@ -1,0 +1,82 @@
+{
+  "name": "@usvc/boilerplate",
+  "version": "0.0.1",
+  "description": "Quick, opinionated, Express-based boilerplate for microservices written in Node.",
+  "main": "dist/Boilerplate",
+  "scripts": {
+    "build": "tsc -p .",
+    "preeg:poc": "docker-compose -f ./poc/docker-compose.yml up -d && sleep 3",
+    "eg:poc": "ts-node-dev --project ./tsconfig.json poc/index.ts",
+    "eg:poc:down": "docker-compose -f ./poc/docker-compose.yml down",
+    "lint": "tslint -c ./tslint.json -p .",
+    "start": "ts-node -p . poc/index.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usvc/boilerplate-js.git"
+  },
+  "keywords": [
+    "microservices",
+    "microservice",
+    "boilerplate",
+    "express",
+    "distributed",
+    "tracing",
+    "centralised",
+    "logging",
+    "metrics",
+    "monitoring",
+    "usvc",
+    "server"
+  ],
+  "author": "@zephinzer",
+  "license": "MIT",
+  "dependencies": {
+    "@types/morgan": "^1.7.35",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.3",
+    "convict": "^4.3.2",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "express-prom-bundle": "^4.1.0",
+    "fluent-logger": "^3.0.0",
+    "helmet": "^3.13.0",
+    "morgan": "^1.9.0",
+    "request": "^2.88.0",
+    "winston": "^3.0.0",
+    "zipkin": "^0.14.1",
+    "zipkin-context-cls": "^0.13.0",
+    "zipkin-instrumentation-express": "^0.14.1",
+    "zipkin-instrumentation-request": "^0.14.1",
+    "zipkin-transport-http": "^0.14.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/compression": "0.0.36",
+    "@types/convict": "^4.2.0",
+    "@types/cookie-parser": "^1.4.1",
+    "@types/cookie-session": "^2.0.35",
+    "@types/cors": "^2.8.4",
+    "@types/express": "^4.16.0",
+    "@types/helmet": "0.0.38",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.5.8",
+    "@types/node-fetch": "^2.1.2",
+    "@types/request": "^2.47.1",
+    "@types/winston": "^2.3.9",
+    "@types/zipkin-context-cls": "^0.11.1",
+    "chai": "^4.1.2",
+    "gts": "^0.8.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.3",
+    "ts-node": "^7.0.1",
+    "ts-node-dev": "^1.0.0-pre.26",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "extends": "./node_modules/gts/tsconfig-google.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "declaration": true,
+    "lib": [
+      "dom",
+      "es5",
+      "es6"
+    ],
+    "baseUrl": "./",
+    "types": [
+      "node",
+      "mocha",
+      "chai"
+    ],
+    "typeRoots": [
+      "src/types"
+    ],
+    "outDir": "dist"
+  },
+  "include": [
+    "src/*.ts",
+    "src/**/*.ts"
+  ]
+}

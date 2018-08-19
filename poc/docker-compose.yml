@@ -1,0 +1,69 @@
+version: "3"
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    # uncomment to enable persistent data
+    # volumes:
+      # - "./data/elasticsearch:/usr/share/elasticsearch/data"
+  elasticsearch_exporter:
+    image: justwatch/elasticsearch_exporter:1.0.2
+    command:
+     - '-es.uri=http://elasticsearch:9200'
+    restart: always
+    ports:
+      - "9108:9108"
+    depends_on:
+      - elasticsearch
+  fluentd:
+    build:
+      context: ./images/fluent
+      dockerfile: ./Dockerfile
+    entrypoint: ["fluentd", "-c", "/etc/fluent/fluent.conf"]
+    ports:
+      - "24231:24231"
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - "./conf/fluent.conf:/etc/fluent/fluent.conf"
+  grafana:
+    image: grafana/grafana:5.2.1
+    ports:
+      - "3000:3000"
+    user: "1000"
+    # uncomment to enable persistent data
+    volumes:
+      # - "./data/grafana:/var/lib/grafana"
+      - "./conf/grafana/provisioning:/etc/grafana/provisioning"
+      - "./conf/grafana/grafana.ini:/etc/grafana/grafana.ini"
+    depends_on:
+      - prometheus
+  kibana:
+    logging:
+      driver: none
+    image: docker.elastic.co/kibana/kibana:6.3.1
+    ports:
+      - "5601:5601"
+    volumes:
+      - "./conf/kibana.yml:/usr/share/kibana/config/kibana.yml"
+    depends_on:
+      - elasticsearch
+  prometheus:
+    logging:
+      driver: none
+    image: prom/prometheus:v2.3.2
+    ports:
+      - "9090:9090"
+    # uncomment to enable persistent data
+    volumes:
+      # - "./data/prometheus:/prometheus:Z"
+      - "./conf/prometheus.yml:/etc/prometheus/prometheus.yml:Z"
+  zipkin:
+    image: openzipkin/zipkin:2.10.2
+    ports:
+      - "9411:9411"
