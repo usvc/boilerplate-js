@@ -20,6 +20,19 @@ import {
   DEFAULT_READINESS_ENDPOINT,
   DEFAULT_SERVICE_ID,
   DEFAULT_BODY_SIZE_LIMIT,
+  DEFAULT_JSON_BODY_CONTENT_TYPE,
+  DEFAULT_URL_ENCODED_BODY_CONTENT_TYPE,
+  DEFAULT_CSP_CHILD_SRC,
+  DEFAULT_CSP_CONNECT_SRC,
+  DEFAULT_CSP_DEFAULT_SRC,
+  DEFAULT_CSP_FONT_SRC,
+  DEFAULT_CSP_FRAME_SRC,
+  DEFAULT_CSP_IMG_SRC,
+  DEFAULT_CSP_MEDIA_SRC,
+  DEFAULT_CSP_OBJECT_SRC,
+  DEFAULT_CSP_REPORT_URI,
+  DEFAULT_CSP_SCRIPT_SRC,
+  DEFAULT_CSP_STYLE_SRC,
 } from './defaults';
 import {
   HealthCheckList
@@ -38,6 +51,19 @@ export interface CreateAppOptions {
   cookieSessionName?: string;
   context: Context<TraceId>;
   corsWhitelist?: string[];
+  cspChildSrc?: string[];
+  cspConnectSrc?: string[];
+  cspDefaultSrc?: string[];
+  cspFontSrc?: string[];
+  cspFrameSrc?: string[];
+  cspImgSrc?: string[];
+  cspMediaSrc?: string[];
+  cspObjectSrc?: string[];
+  cspReportUri?: string;
+  cspScriptSrc?: string[];
+  cspStyleSrc?: string[];
+  enableCors?: boolean;
+  enableCsp?: boolean;
   jsonBodyContentType?: string;
   jsonBodySizeLimit?: string;
   livenessChecks?: HealthCheckList;
@@ -57,7 +83,20 @@ export function createApp({
   cookieSessionName = DEFAULT_SERVICE_ID,
   context,
   corsWhitelist = [],
-  jsonBodyContentType = '*/json',
+  cspChildSrc = DEFAULT_CSP_CHILD_SRC,
+  cspConnectSrc = DEFAULT_CSP_CONNECT_SRC,
+  cspDefaultSrc = DEFAULT_CSP_DEFAULT_SRC,
+  cspFontSrc = DEFAULT_CSP_FONT_SRC,
+  cspFrameSrc = DEFAULT_CSP_FRAME_SRC,
+  cspImgSrc = DEFAULT_CSP_IMG_SRC,
+  cspMediaSrc = DEFAULT_CSP_MEDIA_SRC,
+  cspObjectSrc = DEFAULT_CSP_OBJECT_SRC,
+  cspReportUri = DEFAULT_CSP_REPORT_URI,
+  cspScriptSrc = DEFAULT_CSP_SCRIPT_SRC,
+  cspStyleSrc = DEFAULT_CSP_STYLE_SRC,
+  enableCors = true,
+  enableCsp = true,
+  jsonBodyContentType = DEFAULT_JSON_BODY_CONTENT_TYPE,
   jsonBodySizeLimit = DEFAULT_BODY_SIZE_LIMIT,
   livenessChecks = {},
   livenessCheckEndpoint = DEFAULT_LIVENESS_ENDPOINT,
@@ -68,10 +107,11 @@ export function createApp({
   readinessCheckEndpoint = DEFAULT_READINESS_ENDPOINT,
   serviceId = DEFAULT_SERVICE_ID,
   tracer,
-  urlEncodedBodyContentType = '*/x-www-form-urlencoded',
+  urlEncodedBodyContentType = DEFAULT_URL_ENCODED_BODY_CONTENT_TYPE,
   urlEncodedBodySizeLimit = DEFAULT_BODY_SIZE_LIMIT,
 }: CreateAppOptions) {
   const app = express();
+  promBundle.promClient.register.clear();
   const metrics = promBundle({
     autoregister: false,
     includeMethod: true,
@@ -83,10 +123,29 @@ export function createApp({
   });
 
   app.use(metrics);
-  app.use(helmet());
+  app.use(helmet((enableCsp) ? {
+    contentSecurityPolicy: {
+      browserSniff: true,
+      directives: {
+        childSrc: cspChildSrc,
+        connectSrc: cspConnectSrc,
+        defaultSrc: cspDefaultSrc,
+        fontSrc: cspFontSrc,
+        frameSrc: cspFrameSrc,
+        imgSrc: cspImgSrc,
+        mediaSrc: cspMediaSrc,
+        objectSrc: cspObjectSrc,
+        reportUri: cspReportUri,
+        scriptSrc: cspScriptSrc,
+        styleSrc: cspStyleSrc,
+      },
+    },
+  } : undefined));
   app.use(zipkinInstrumentationExpress({tracer}));
   app.use(createContextMiddleware({context}));
-  app.use(createCorsMiddleware({whitelist: corsWhitelist}));
+  if (enableCors) {
+    app.use(createCorsMiddleware({whitelist: corsWhitelist}));
+  }
   app.use(cookieParser());
   app.use(cookieSession({
     name: cookieSessionName,
@@ -117,6 +176,7 @@ export function createApp({
     createHealthCheckMiddleware({
       checks: readinessChecks,
     }));
+  app.post(cspReportUri, (req) => logger.error(req.body));
 
   return app;
 }
@@ -212,6 +272,16 @@ export interface CreateCorsMiddlewareOptions {
   whitelist: string[];
 }
 
+class CorsError extends Error {
+  status: number;
+
+  constructor(message: any) {
+    super(message);
+    this.status = 401;
+    return this;
+  }
+}
+
 function createCorsMiddleware({
   whitelist = [],
 }: CreateCorsMiddlewareOptions): express.RequestHandler {
@@ -220,7 +290,8 @@ function createCorsMiddleware({
       if (origin === undefined || whitelist.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        const corsError = new Error(`Origin "${origin}" is invalid.`);
+        const corsError = new CorsError(`Origin "${origin}" is invalid.`);
+        corsError.status = 401;
         callback(corsError, false);
       }
     },

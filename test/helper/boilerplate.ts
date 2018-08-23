@@ -1,25 +1,24 @@
-import {Boilerplate} from '../src/Boilerplate';
+import {Boilerplate} from '../../src/Boilerplate';
 
 Boilerplate.init({
   appCookieSessionName: 'usvcbp',
-  appCorsWhitelist: [],
+  appCorsWhitelist: [
+    'http://_test.com'
+  ],
   appJsonBodyContentType: '*/json',
   appJsonBodySizeLimit: '2mb',
   appLivenessChecks: {
-    database: () => 
+    truthy: () =>
       new Promise((resolve) => {
         setTimeout(() => {
-          resolve({
-            status: true,
-            message: 'ok',
-          });
+          resolve({status: true});
         }, 500);
       }),
   },
   appLivenessCheckEndpoint: '/healthz',
   appMetricsEndpoint: '/metrics',
   appReadinessChecks: {
-    noop: () =>
+    falsey: () =>
       new Promise((resolve) => {
         setTimeout(() => {
           resolve({status: false});
@@ -46,19 +45,4 @@ Boilerplate.init({
   zipkinScheme: 'http',
 });
 
-const {app, logger} = Boilerplate;
-app.get('/other', (req, res) => {
-  require('./lib/extfn').createLog();
-  res.json('ok');
-});
-const server = app.listen(8000);
-server.on('listening', () => {
-  logger.info({
-    message: 'we\'re live!',
-    app: `http://localhost:${server.address()['port']}`,
-    grafana: 'http://localhost:3000',
-    kibana: 'http://localhost:5601',
-    prometheus: 'http://localhost:9090',
-    zipkin: 'http://localhost:9411',
-  });
-});
+export {Boilerplate};

@@ -12,7 +12,9 @@
     "types": [
       "node",
       "mocha",
-      "chai"
+      "chai",
+      "sinon",
+      "sinon-chai"
     ],
     "typeRoots": [
       "src/types"

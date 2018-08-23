@@ -5,11 +5,13 @@
   "main": "dist/Boilerplate",
   "scripts": {
     "build": "tsc -p .",
-    "preeg:poc": "docker-compose -f ./poc/docker-compose.yml up -d && sleep 3",
-    "eg:poc": "ts-node-dev --project ./tsconfig.json poc/index.ts",
-    "eg:poc:down": "docker-compose -f ./poc/docker-compose.yml down",
+    "preeg:poc": "docker-compose -f ./eg/poc/docker-compose.yml up -d && sleep 3",
+    "eg:poc": "ts-node-dev --project ./tsconfig.json eg/poc/index.ts",
+    "eg:poc:down": "docker-compose -f ./eg/poc/docker-compose.yml down",
     "lint": "tslint -c ./tslint.json -p .",
-    "start": "ts-node -p . poc/index.ts"
+    "start": "ts-node -p . eg/poc/index.ts",
+    "test": "mocha -r ts-node/register \"test/*.test.ts\"",
+    "test:watch": "npm run test -- --watch --watch-extensions ts"
   },
   "publishConfig": {
     "access": "public"
@@ -35,7 +37,6 @@
   "author": "@zephinzer",
   "license": "MIT",
   "dependencies": {
-    "@types/morgan": "^1.7.35",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "convict": "^4.3.2",
@@ -65,15 +66,21 @@
     "@types/express": "^4.16.0",
     "@types/helmet": "0.0.38",
     "@types/mocha": "^5.2.5",
+    "@types/morgan": "^1.7.35",
     "@types/node": "^10.5.8",
     "@types/node-fetch": "^2.1.2",
     "@types/request": "^2.47.1",
+    "@types/sinon": "^5.0.1",
+    "@types/sinon-chai": "^3.2.0",
     "@types/winston": "^2.3.9",
     "@types/zipkin-context-cls": "^0.11.1",
     "chai": "^4.1.2",
     "gts": "^0.8.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
+    "sinon": "^6.1.5",
+    "sinon-chai": "^3.2.0",
+    "supertest": "^3.1.0",
     "ts-node": "^7.0.1",
     "ts-node-dev": "^1.0.0-pre.26",
     "tslint": "^5.11.0",

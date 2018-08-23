@@ -16,6 +16,19 @@ import {
   DEFAULT_SERVICE_ID,
   DEFAULT_METRICS_ENDPOINT,
   DEFAULT_BODY_SIZE_LIMIT,
+  DEFAULT_JSON_BODY_CONTENT_TYPE,
+  DEFAULT_URL_ENCODED_BODY_CONTENT_TYPE,
+  DEFAULT_CSP_CHILD_SRC,
+  DEFAULT_CSP_CONNECT_SRC,
+  DEFAULT_CSP_DEFAULT_SRC,
+  DEFAULT_CSP_FONT_SRC,
+  DEFAULT_CSP_FRAME_SRC,
+  DEFAULT_CSP_IMG_SRC,
+  DEFAULT_CSP_MEDIA_SRC,
+  DEFAULT_CSP_OBJECT_SRC,
+  DEFAULT_CSP_REPORT_URI,
+  DEFAULT_CSP_SCRIPT_SRC,
+  DEFAULT_CSP_STYLE_SRC,
 } from './defaults';
 import {
   HealthCheckList
@@ -24,6 +37,19 @@ import {
 export interface AppOptions {
   appCookieSessionName?: string;
   appCorsWhitelist?: string[];
+  appCspChildSrc?: string[];
+  appCspConnectSrc?: string[];
+  appCspDefaultSrc?: string[];
+  appCspFontSrc?: string[];
+  appCspFrameSrc?: string[];
+  appCspImgSrc?: string[];
+  appCspMediaSrc?: string[];
+  appCspObjectSrc?: string[];
+  appCspReportUri?: string;
+  appCspScriptSrc?: string[];
+  appCspStyleSrc?: string[];
+  appEnableCors?: boolean;
+  appEnableCsp?: boolean;
   appJsonBodyContentType?: string;
   appJsonBodySizeLimit?: string;
   appLivenessChecks?: HealthCheckList;
@@ -98,14 +124,27 @@ export class Boilerplate {
     tracer = 'zipkin',
     appCookieSessionName = DEFAULT_SERVICE_ID,
     appCorsWhitelist = [],
-    appJsonBodyContentType = '*/json',
+    appCspChildSrc = DEFAULT_CSP_CHILD_SRC,
+    appCspConnectSrc = DEFAULT_CSP_CONNECT_SRC,
+    appCspDefaultSrc = DEFAULT_CSP_DEFAULT_SRC,
+    appCspFontSrc = DEFAULT_CSP_FONT_SRC,
+    appCspFrameSrc = DEFAULT_CSP_FRAME_SRC,
+    appCspImgSrc = DEFAULT_CSP_IMG_SRC,
+    appCspMediaSrc = DEFAULT_CSP_MEDIA_SRC,
+    appCspObjectSrc = DEFAULT_CSP_OBJECT_SRC,
+    appCspReportUri = DEFAULT_CSP_REPORT_URI,
+    appCspScriptSrc = DEFAULT_CSP_SCRIPT_SRC,
+    appCspStyleSrc = DEFAULT_CSP_STYLE_SRC,
+    appEnableCors = true,
+    appEnableCsp = true,
+    appJsonBodyContentType = DEFAULT_JSON_BODY_CONTENT_TYPE,
     appJsonBodySizeLimit = DEFAULT_BODY_SIZE_LIMIT,
     appLivenessChecks = {},
     appLivenessCheckEndpoint = DEFAULT_READINESS_ENDPOINT,
     appMetricsEndpoint = DEFAULT_METRICS_ENDPOINT,
     appReadinessChecks = {},
     appReadinessCheckEndpoint = DEFAULT_LIVENESS_ENDPOINT,
-    appUrlEncodedBodyContentType = '*/x-www-form-urlencoded',
+    appUrlEncodedBodyContentType = DEFAULT_URL_ENCODED_BODY_CONTENT_TYPE,
     appUrlEncodedBodySizeLimit = DEFAULT_BODY_SIZE_LIMIT,
     fluentdHost = 'localhost',
     fluentdPort = '24224',
@@ -221,6 +260,19 @@ export class Boilerplate {
       cookieSessionName: appCookieSessionName,
       context: Boilerplate.context,
       corsWhitelist: appCorsWhitelist,
+      cspChildSrc: appCspChildSrc,
+      cspConnectSrc: appCspConnectSrc,
+      cspDefaultSrc: appCspDefaultSrc,
+      cspFontSrc: appCspFontSrc,
+      cspFrameSrc: appCspFrameSrc,
+      cspImgSrc: appCspImgSrc,
+      cspMediaSrc: appCspMediaSrc,
+      cspObjectSrc: appCspObjectSrc,
+      cspReportUri: appCspReportUri,
+      cspScriptSrc: appCspScriptSrc,
+      cspStyleSrc: appCspStyleSrc,
+      enableCors: appEnableCors,
+      enableCsp: appEnableCsp,
       jsonBodyContentType: appJsonBodyContentType,
       jsonBodySizeLimit: appJsonBodySizeLimit,
       livenessChecks: appLivenessChecks,
