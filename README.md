@@ -14,10 +14,10 @@ Quick, opinionated, Express-based boilerplate for microservices written in Node.
 - [x] Content Security Policy (CSP) support
 
 # TL;DR
-- [What's Included](#what-s-included)
+- [What's Included](#whats-included)
 - [Usage](#usage)
-  - [Basic Usage](#basic-usage-w--no-configuration)
-  - [Advanced Usage](#advanced-usage-w--full-configuration)
+  - [Basic Usage](#basic-usage-w-no-configuration)
+  - [Advanced Usage](#advanced-usage-w-full-configuration)
 - [Examples](#examples)
   - [Proof-of-Concept](#proof-of-concept)
 - [Configuration](#configuration)
@@ -27,7 +27,7 @@ Quick, opinionated, Express-based boilerplate for microservices written in Node.
   - [Configuring Logger](#configuring-logger)
   - [Configuring Tracer](#configuring-tracer)
 - [Types](#types)
-  - [`Health`](#type--health)
+  - [`Health`](#type-health)
 
 # Usage
 Install this boilerplate with:
