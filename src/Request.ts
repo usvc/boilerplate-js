@@ -9,6 +9,7 @@ export interface CreateRequestOptions {
 export type RequesterModule = 'request';
 export type RequestRequester = (
   remoteServiceName: string,
+  url: string,
   requestOptions: RequestOptions,
 ) => Request;
 
@@ -17,12 +18,16 @@ export function createRequest({
 }: CreateRequestOptions): RequestRequester {
   return (
     remoteServiceName: string,
+    url: string,
     requestOptions: RequestOptions,
   ) => {
     const instrumentedRequest = instrumentRequest(request, {
       tracer,
       remoteServiceName: remoteServiceName || 'unknown',
     });
-    return instrumentedRequest(requestOptions);
+    return instrumentedRequest({
+      url,
+      ...requestOptions,
+    });
   };
 }

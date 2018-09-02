@@ -8,6 +8,7 @@ Quick, opinionated, Express-based boilerplate for microservices written in Node.
 - [x] Logs centralisation with FluentD (td-agent)
 - [x] Distributed tracing with Zipkin
 - [x] Tracable request object with Zipkin
+- [x] Zipkin-instrumented Request object
 - [x] Bootstrapped HTTP server with Express
 - [x] Liveness and readiness health checks
 - [x] Cross Origin Resource Sharing (CORS) support
