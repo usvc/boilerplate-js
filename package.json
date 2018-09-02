@@ -1,6 +1,6 @@
 {
   "name": "@usvc/boilerplate",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Quick, opinionated, Express-based boilerplate for microservices written in Node.",
   "main": "dist/Boilerplate",
   "scripts": {
@@ -9,7 +9,7 @@
     "eg:poc": "ts-node-dev --project ./tsconfig.json eg/poc/index.ts",
     "eg:poc:down": "docker-compose -f ./eg/poc/docker-compose.yml down",
     "lint": "tslint -c ./tslint.json -p .",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "start": "ts-node -p . eg/poc/index.ts",
     "test": "mocha -r ts-node/register \"test/*.test.ts\"",
     "test:watch": "npm run test -- --watch --watch-extensions ts"

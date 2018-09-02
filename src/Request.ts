@@ -7,10 +7,17 @@ export interface CreateRequestOptions {
   tracer: Tracer;
 }
 export type RequesterModule = 'request';
+export type RequestRequesterCallback = (
+  error?: any,
+  response?: object,
+  body?: any,
+) => any;
+
 export type RequestRequester = (
   remoteServiceName: string,
   url: string,
-  requestOptions: RequestOptions,
+  requestOptionsOrCallback: RequestOptions | RequestRequesterCallback,
+  callback: RequestRequesterCallback,
 ) => Request;
 
 export function createRequest({
@@ -19,15 +26,26 @@ export function createRequest({
   return (
     remoteServiceName: string,
     url: string,
-    requestOptions: RequestOptions,
+    requestOptionsOrCallback: RequestOptions | RequestRequesterCallback,
+    callback: RequestRequesterCallback = () => {},
   ) => {
     const instrumentedRequest = instrumentRequest(request, {
       tracer,
       remoteServiceName: remoteServiceName || 'unknown',
     });
-    return instrumentedRequest({
-      url,
-      ...requestOptions,
-    });
+    switch (typeof requestOptionsOrCallback) {
+      case 'function':
+        return instrumentedRequest({
+          url,
+        }, callback);
+      case 'object':
+        return instrumentedRequest({
+          url,
+          ...requestOptionsOrCallback,
+        }, callback);
+      default:
+        throw new Error('A callback has to provided as the third argument.');
+    }
+    
   };
 }
