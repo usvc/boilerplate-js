@@ -63,6 +63,7 @@ server.on('listening', () => {
 import {Boilerplate} from '@usvc/boilerplate';
 
 Boilerplate.init({
+  appAccessLoggingBypassUrls: [],
   appCookieSessionName: 'usvcbp',
   appCorsWhitelist: [],
   appCspChildSrc: ['"self"'],
@@ -139,6 +140,7 @@ The boilerplate is initialized through the `.init()` function. It accepts config
 
 | Config Parameter | Environment Variable | Default Value | Description |
 | --- | --- | --- | -- |
+| `appAccessLoggingBypassUrls` | N/A | `[]` | List of URLs to ignore when performing access logging |
 | `appCookieSessionName` | N/A | `"usvcbp"` | Cookie session name |
 | `appCorsWhitelist` | N/A | `[]` | URL whitelist for Cross Origin Resource Sharing (CORS) |
 | `appCspChildSrc` | N/A | `['"self"']` | Defines the `child-src` property in the Content Security Policy |

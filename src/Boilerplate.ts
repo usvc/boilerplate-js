@@ -35,6 +35,7 @@ import {
 } from './types';
 
 export interface AppOptions {
+  appAccessLoggingBypassUrls?: string[];
   appCookieSessionName?: string;
   appCorsWhitelist?: string[];
   appCspChildSrc?: string[];
@@ -122,6 +123,7 @@ export class Boilerplate {
     logsCollator = 'fluentd',
     requester = 'request',
     tracer = 'zipkin',
+    appAccessLoggingBypassUrls = [],
     appCookieSessionName = DEFAULT_SERVICE_ID,
     appCorsWhitelist = [],
     appCspChildSrc = DEFAULT_CSP_CHILD_SRC,
@@ -257,6 +259,7 @@ export class Boilerplate {
 
     // server application init
     Boilerplate.app = createApp({
+      accessLoggingBypassUrls: appAccessLoggingBypassUrls,
       cookieSessionName: appCookieSessionName,
       context: Boilerplate.context,
       corsWhitelist: appCorsWhitelist,

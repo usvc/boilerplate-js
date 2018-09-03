@@ -1,6 +1,6 @@
 {
   "name": "@usvc/boilerplate",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Quick, opinionated, Express-based boilerplate for microservices written in Node.",
   "main": "dist/Boilerplate",
   "scripts": {

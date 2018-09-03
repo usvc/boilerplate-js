@@ -48,6 +48,7 @@ export interface ContextualRequest extends Request {
 }
 
 export interface CreateAppOptions {
+  accessLoggingBypassUrls?: string[];
   cookieSessionName?: string;
   context: Context<TraceId>;
   corsWhitelist?: string[];
@@ -80,6 +81,7 @@ export interface CreateAppOptions {
 }
 
 export function createApp({
+  accessLoggingBypassUrls = [],
   cookieSessionName = DEFAULT_SERVICE_ID,
   context,
   corsWhitelist = [],
@@ -154,6 +156,7 @@ export function createApp({
   app.use(createAccessLoggerMiddleware({
     serviceId,
     morganStream,
+    accessLoggingBypassUrls,
   }));
   app.use(bodyParser.json({
     limit: jsonBodySizeLimit,
@@ -176,7 +179,10 @@ export function createApp({
     createHealthCheckMiddleware({
       checks: readinessChecks,
     }));
-  app.post(cspReportUri, (req) => logger.error(req.body));
+  app.post(cspReportUri, (req,res ) => {
+    logger.error(req.body);
+    res.status(200).send();
+  });
 
   return app;
 }
@@ -210,11 +216,13 @@ function createHealthCheckMiddleware({
 export interface CreateAccessLoggerMiddlewareOptions {
   serviceId: string;
   morganStream: any;
+  accessLoggingBypassUrls: string[];
 }
 
 function createAccessLoggerMiddleware({
   serviceId,
   morganStream,
+  accessLoggingBypassUrls,
 }: CreateAccessLoggerMiddlewareOptions): express.RequestHandler {
   return morgan((
     tokens: morgan.TokenIndexer,
@@ -244,6 +252,9 @@ function createAccessLoggerMiddleware({
     };
     return JSON.stringify(message);
   }, {
+    skip: (req) => {
+      return (accessLoggingBypassUrls.indexOf(req.url) !== -1);
+    },
     stream: {
       write: morganStream,
     },
