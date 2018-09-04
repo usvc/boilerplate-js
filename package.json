@@ -1,6 +1,6 @@
 {
   "name": "@usvc/boilerplate",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Quick, opinionated, Express-based boilerplate for microservices written in Node.",
   "main": "dist/Boilerplate",
   "scripts": {
@@ -39,6 +39,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "case": "^1.5.5",
     "compression": "^1.7.3",
     "convict": "^4.3.2",
     "cookie-parser": "^1.4.3",
@@ -49,11 +50,13 @@
     "fluent-logger": "^3.0.0",
     "helmet": "^3.13.0",
     "morgan": "^1.9.0",
+    "node-fetch": "^2.2.0",
     "request": "^2.88.0",
     "winston": "^3.0.0",
     "zipkin": "^0.14.1",
     "zipkin-context-cls": "^0.13.0",
     "zipkin-instrumentation-express": "^0.14.1",
+    "zipkin-instrumentation-fetch": "^0.14.1",
     "zipkin-instrumentation-request": "^0.14.1",
     "zipkin-transport-http": "^0.14.1"
   },

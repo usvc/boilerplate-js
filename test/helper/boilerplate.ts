@@ -1,6 +1,7 @@
-import {Boilerplate} from '../../src/Boilerplate';
+import {Boilerplate, BoilerplateInitOptions} from '../../src/Boilerplate';
+import {HealthCheck, Health} from '../../src/types';
 
-Boilerplate.init({
+const defaultOptions: BoilerplateInitOptions = {
   appCookieSessionName: 'usvcbp',
   appCorsWhitelist: [
     'http://_test.com'
@@ -8,7 +9,7 @@ Boilerplate.init({
   appJsonBodyContentType: '*/json',
   appJsonBodySizeLimit: '2mb',
   appLivenessChecks: {
-    truthy: () =>
+    truthy: (): Promise<Health> =>
       new Promise((resolve) => {
         setTimeout(() => {
           resolve({status: true});
@@ -18,7 +19,7 @@ Boilerplate.init({
   appLivenessCheckEndpoint: '/healthz',
   appMetricsEndpoint: '/metrics',
   appReadinessChecks: {
-    falsey: () =>
+    falsey: (): Promise<Health> =>
       new Promise((resolve) => {
         setTimeout(() => {
           resolve({status: false});
@@ -43,6 +44,29 @@ Boilerplate.init({
   zipkinPort: '9411',
   zipkinSampleFrequency: 1.0,
   zipkinScheme: 'http',
+};
+
+Boilerplate.init(defaultOptions);
+
+export const withDefaults = {
+  app: Boilerplate.app,
+  logger: Boilerplate.logger,
+  request: Boilerplate.request,
+  tracer: Boilerplate.tracer,
+};
+
+Boilerplate.init({
+  ...defaultOptions,
+  requester: 'fetch',
 });
+
+console.info(Boilerplate.request);
+
+export const withFetch = {
+  app: Boilerplate.app,
+  logger: Boilerplate.logger,
+  request: Boilerplate.request,
+  tracer: Boilerplate. tracer,
+};
 
 export {Boilerplate};

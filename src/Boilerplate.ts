@@ -7,7 +7,13 @@ import * as fluentLogger from 'fluent-logger';
 import {TransformFunction} from 'logform';
 import {load as loadConfig, Config} from './Config';
 import {createLogger, Logger, LoggerModule} from './Logger';
-import {createRequest, RequestRequester, RequesterModule} from './Request';
+import {
+  createFetch,
+  createRequest,
+  FetchRequester,
+  RequestRequester,
+  RequesterModule,
+} from './Request';
 import {createTracer, TracerService} from './Tracer';
 import {createApp} from './App';
 import {
@@ -82,7 +88,7 @@ export interface LogsCollatorFluentdOptions {
 }
 export type LogsCollatorOptions = LogsCollatorFluentdOptions;
 
-export type Requester = RequestRequester;
+export type Requester = RequestRequester | FetchRequester;
 export interface RequestRequestOptions {
   requester?: RequesterModule;
 }
@@ -197,7 +203,15 @@ export class Boilerplate {
               return createRequest({tracer: Boilerplate.tracer});
             default:
               // tslint:disable-next-line max-line-length
-              throw new Error(`Provided tracer "${tracer}" is not a supported tracer.`);
+              throw new Error(`Provided tracer "${tracer}" is not a supported tracer for Request.`);
+          }
+        case 'fetch':
+          switch (tracer) {
+            case 'zipkin':
+              return createFetch({tracer: Boilerplate.tracer});
+            default:
+              // tslint:disable-next-line max-line-length
+              throw new Error(`Provided tracer "${tracer}" is not a supported tracer for Fetch.`);
           }
         default:
           // tslint:disable-next-line max-line-length

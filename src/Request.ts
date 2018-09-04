@@ -1,19 +1,55 @@
-import * as request from 'request';
-import {Request, RequestCallback, Options as RequestOptions} from 'request';
+import * as Case from 'case';
+import * as fetch from 'node-fetch';
+import instrumentFetch = require('zipkin-instrumentation-fetch');
 import instrumentRequest = require('zipkin-instrumentation-request');
-import { Tracer } from './Tracer';
+import * as request from 'request';
+import {RequestCallback, Options as RequestOptions} from 'request';
+import {Tracer} from './Tracer';
+import * as URL from 'url';
 
-export interface CreateRequestOptions {
+
+export type RequesterModule = 'request' | 'fetch';
+
+export interface FetchRequesterOptions extends fetch.Request {
+  remoteServiceName?: string;
+}
+
+export type FetchRequester = (
+  url: string,
+  fetchOptions: FetchRequesterOptions,
+) => Promise<fetch.Response>;
+
+export interface CreateFetchOptions {
   tracer: Tracer;
 }
-export type RequesterModule = 'request';
+
+export function createFetch({
+  tracer
+}: CreateFetchOptions): FetchRequester {
+  return (url, fetchOptions) => {
+    const parsedUrl = URL.parse(url);
+    const {host} = parsedUrl;
+    const remoteServiceName =
+      fetchOptions.remoteServiceName
+      || Case.kebab(host ? host : 'unknown');
+    return instrumentFetch(
+      fetch,
+      {tracer, remoteServiceName},
+    )(url, fetchOptions);
+  };
+}
+
 
 export type RequestRequester = (
   remoteServiceName: string,
   url: string,
   requestOptionsOrCallback: RequestOptions | RequestCallback,
   callback: RequestCallback,
-) => Request;
+) => request.Request;
+
+export interface CreateRequestOptions {
+  tracer: Tracer;
+}
 
 export function createRequest({
   tracer
