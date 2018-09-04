@@ -132,7 +132,7 @@ The boilerplate is initialized through the `.init()` function. It accepts config
 | --- | --- | --- | -- |
 | `logger` | N/A | `"winston"` | Decides which logger to use |
 | `logsCollator` | N/A | `"fluentd"` | Decides which logs collator to use |
-| `requester` | N/A | `"request"` | Decides which request module to use |
+| `requester` | N/A | `"request"` | Decides which request module to use. `"fetch"` is also available |
 | `tracer` | N/A | `"zipkin"` | Decides which tracer to use |
 | `serviceId` | `SERVICE_ID` | `"usvcbp"` | The ID of the service instance we're spinning up |
 
